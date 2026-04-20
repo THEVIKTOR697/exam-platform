@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json
+services:
+  api:
+    environment:
+      SYNC_DATABASE_URL: ${SYNC_DATABASE_URL}
+      ASYNC_DATABASE_URL: ${ASYNC_DATABASE_URL}
+    command: >
+      gunicorn -k uvicorn.workers.UvicornWorker
+      -w 4 -b 0.0.0.0:8000 app.main:app
+    env_file:
+      - .env.prod

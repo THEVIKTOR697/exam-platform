@@ -30,7 +30,7 @@ resource "aws_instance" "api_server" {
                 ls -la
 
                 docker build -t exam-platform .
-                docker run -d -p 8000:8000 exam-platform
+                docker run -d -p 8000:8000 --env-file .env exam-platform
                 EOF
 
   tags = {
@@ -63,4 +63,46 @@ resource "aws_security_group" "api_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+}
+
+resource "aws_db_instance" "postgres" {
+  identifier = "exam-platform-db"
+
+  engine         = "postgres"
+  instance_class = "db.t3.micro"
+
+  allocated_storage = 20
+
+  username = "postgres"
+  password = "postgres123"
+
+  publicly_accessible = true
+  skip_final_snapshot = true
+
+  db_name = "examdb"
+
+  vpc_security_group_ids = [aws_security_group.db_sg.id]
+}
+
+resource "aws_security_group" "db_sg" {
+  name = "db-security-group"
+
+  ingress {
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    
+    security_groups = [aws_security_group.api_sg.id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+output "db_endpoint" {
+  value = aws_db_instance.postgres.endpoint
 }

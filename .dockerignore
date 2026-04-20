@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+venv/
+.git
+.gitignore
+
+node_modules/
+*.log
+*.sqlite3
+dist/
+build/
+alembic/versions/*.pyc
+
+infra/
