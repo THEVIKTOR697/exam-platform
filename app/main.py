@@ -15,6 +15,10 @@ def root():
     print('DBURL: ', settings.ASYNC_DATABASE_URL)
     return {"message": "API running"}
 
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+    
 @app.on_event("startup")
 def test_db():
     engine = get_engine()

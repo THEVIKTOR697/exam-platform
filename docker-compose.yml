@@ -5,10 +5,6 @@ services:
     image: postgres:15
     container_name: exam_db
     restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres123
-      POSTGRES_DB: examdb
     ports:
       - "5433:5432"
     volumes:
@@ -21,12 +17,18 @@ services:
 
   api:
     build: .
+    restart: always
     container_name: exam_api
     depends_on:
       db:
         condition: service_healthy
     ports:
       - "8000:8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   postgres_data:
