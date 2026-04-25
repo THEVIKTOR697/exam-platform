@@ -33,6 +33,7 @@ jobs:
 
             echo "Pull latest code..."
             cd ~/exam-platform
+            git config --global --add safe.directory /home/ec2-user/exam-platform
             git pull origin main
 
             echo "Stopping containers..."
@@ -41,9 +42,13 @@ jobs:
             echo "Building and starting containers..."
             docker compose -f docker-compose.yml up -d --build
 
-            echo "Waiting for DB to be healthy..."
-            until docker inspect --format='{{json .State.Health.Status}}' exam_db | grep -q "healthy"; do
-              echo "Waiting for DB..."
+            echo "Waiting for API..."
+            for i in {1..10}; do
+              if curl -f http://localhost:8000/health; then
+                echo "API is ready"
+                break
+              fi
+              echo "Waiting..."
               sleep 5
             done
             
