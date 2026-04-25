@@ -16,7 +16,9 @@ resource "aws_instance" "api_server" {
 
                 yum update -y
                 yum install -y docker git
-
+                curl -L https://download.docker.com/linux/centos/7/x86_64/stable/Packages/docker-compose-plugin-2.6.0-3.el7.x86_64.rpm -o ./compose-plugin.rpm
+                yum install ./compose-plugin.rpm -y
+                
                 systemctl start docker
                 systemctl enable docker
 
@@ -29,6 +31,9 @@ resource "aws_instance" "api_server" {
                 # DEBUG
                 ls -la
 
+                #Wait for rds_endpoint
+                sleep 40
+                
                 docker compose -f docker-compose.yml up --build
                 EOF
 
@@ -100,8 +105,4 @@ resource "aws_security_group" "db_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
-}
-
-output "db_endpoint" {
-  value = aws_db_instance.postgres.endpoint
 }

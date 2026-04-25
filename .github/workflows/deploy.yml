@@ -23,7 +23,9 @@ jobs:
       # 3. Deploy
       - name: Deploy to EC2
         run: |
-          ssh -o StrictHostKeyChecking=no -i key.pem ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
+          echo "HOST: ${{ secrets.EC2_HOST }}"
+            echo "KEY: ${{ secrets.EC2_SSH_KEY }}"
+            ssh -o StrictHostKeyChecking=no -i key.pem ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
 
             echo "Pull latest code..."
             cd ~/exam-platform
@@ -33,7 +35,7 @@ jobs:
             docker compose down
 
             echo "Building and starting containers..."
-            docker compose -f docker-compose.yml up --build
+            docker compose -f docker-compose.yml up -d --build
 
             echo "Waiting for DB to be healthy..."
             until docker inspect --format='{{json .State.Health.Status}}' exam_db | grep -q "healthy"; do
