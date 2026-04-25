@@ -22,9 +22,12 @@ jobs:
 
       # 3. Deploy
       - name: Deploy to EC2
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
         run: |
-          echo "HOST: ${{ secrets.EC2_HOST }}"
-            echo "KEY: ${{ secrets.EC2_SSH_KEY }}"
+          if [ -z "$EC2_HOST" ]; then echo "HOST EMPTY"; else echo "HOST OK"; fi
+            if [ -z "$EC2_SSH_KEY" ]; then echo "KEY EMPTY"; else echo "KEY OK"; fi
             ssh -o StrictHostKeyChecking=no -i key.pem ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
 
             echo "Pull latest code..."
