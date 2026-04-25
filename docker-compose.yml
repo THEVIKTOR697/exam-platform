@@ -1,31 +1,12 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json
 
 services:
-  db:
-    image: postgres:15
-    container_name: exam_db
-    restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres123
-      POSTGRES_DB: examdb
-    ports:
-      - "5433:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-
   api:
     build: .
     restart: always
     container_name: exam_api
-    depends_on:
-      db:
-        condition: service_healthy
+    env_file:
+      - .env.prod
     ports:
       - "8000:8000"
     healthcheck:
@@ -33,6 +14,3 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
-volumes:
-  postgres_data:

@@ -1,0 +1,55 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Crear llave SSH
+      - name: Setup SSH key
+        run: |
+          echo "${{ secrets.EC2_SSH_KEY }}" > key.pem
+          chmod 600 key.pem
+
+      # 3. Deploy
+      - name: Deploy to EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no -i key.pem ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
+
+            echo "Pull latest code..."
+            cd ~/exam-platform
+            git pull origin main
+
+            echo "Stopping containers..."
+            docker compose down
+
+            echo "Building and starting containers..."
+            docker compose -f docker-compose.yml up --build
+
+            echo "Waiting for DB to be healthy..."
+            until docker inspect --format='{{json .State.Health.Status}}' exam_db | grep -q "healthy"; do
+              echo "Waiting for DB..."
+              sleep 5
+            done
+            
+            echo "Waiting for API container..."
+            sleep 10
+
+            echo "Running Alembic migrations..."
+            docker compose exec -T api alembic upgrade head
+
+            echo "Cleaning unused images..."
+            docker system prune -f
+
+            echo "Deploy complete"
+
+          EOF

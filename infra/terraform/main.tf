@@ -29,8 +29,7 @@ resource "aws_instance" "api_server" {
                 # DEBUG
                 ls -la
 
-                docker build -t exam-platform .
-                docker run -d -p 8000:8000 --env-file .env exam-platform
+                docker compose -f docker-compose.yml up --build
                 EOF
 
   tags = {
