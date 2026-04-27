@@ -1,18 +1,19 @@
 # app/main.py
-
 from fastapi import FastAPI, Depends
 from app.db.sync_db import get_engine, get_db
 from app.db.async_db import get_async_db
 from app.repositories.async_repo import async_user_repository
 from app.repositories.sync_repo import user_repository
+from app.api.routes import router
 
 app = FastAPI(title="Exam Platform API")
+app.include_router(router)
 
 @app.get("/")
 def root():
     from app.core.config import settings
-    print('DBURL: ', settings.SYNC_DATABASE_URL)
-    print('DBURL: ', settings.ASYNC_DATABASE_URL)
+    print('SYNCDBURL: ', settings.SYNC_DATABASE_URL)
+    print('ASYNC_DBURL: ', settings.ASYNC_DATABASE_URL)
     return {"message": "API running"}
 
 @app.get("/health")
@@ -36,4 +37,3 @@ def get_users(db=Depends(get_db)):
 @app.get("/async/users")
 async def get_users_async(db=Depends(get_async_db)):
     return await async_user_repository.get_users(db)
-    

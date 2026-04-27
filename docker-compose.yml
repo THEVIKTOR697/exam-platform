@@ -1,6 +1,10 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json
 
 services:
+  redis:
+    image: redis:7
+    container_name: exam_redis
+    restart: always
   api:
     build: .
     restart: always
@@ -9,8 +13,28 @@ services:
       - .env.prod
     ports:
       - "8000:8000"
+    depends_on:
+      - redis
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 10s
       timeout: 5s
       retries: 5
+    volumes:
+      - .:/app
+      - reports_data:/app/reports
+  worker:
+    build: .
+    container_name: exam_worker
+    restart: always
+    command: celery -A app.core.celery_app.celery worker --loglevel=info
+    env_file:
+      - .env.prod
+    depends_on:
+      - redis
+    volumes:
+      - .:/app
+      - reports_data:/app/reports
+volumes:
+  postgres_data:
+  reports_data:
