@@ -34,7 +34,8 @@ jobs:
             echo "Pull latest code..."
             cd ~/exam-platform
             git config --global --add safe.directory /home/ec2-user/exam-platform
-            git pull origin main
+            git fetch origin
+            git reset --hard origin/main
 
             echo "Stopping containers..."
             docker compose down

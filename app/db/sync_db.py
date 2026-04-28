@@ -5,12 +5,14 @@ from sqlalchemy.orm import sessionmaker
 import os
 
 SYNC_DATABASE_URL = os.getenv("SYNC_DATABASE_URL")
-print("SYNCURL:", SYNC_DATABASE_URL)
 
 if not SYNC_DATABASE_URL:
     raise ValueError("SYNC_DATABASE_URL is not set")
+else:
+    print("SYNCURL:", SYNC_DATABASE_URL)
 
 _engine = None
+SessionLocal = None
 
 def get_engine():
     global _engine
@@ -26,15 +28,26 @@ def get_engine():
         )
     return _engine
 
+def get_session_local():
+    global SessionLocal
+    if SessionLocal is None:
+        engine = get_engine()
+        SessionLocal = sessionmaker(
+            autocommit=False,
+            autoflush=False,
+            bind=engine
+        )
+    return SessionLocal
+
 def get_db():
-    engine = get_engine()
-    SessionLocal = sessionmaker(
-        autocommit=False,
-        autoflush=False,
-        bind=engine
-    )
+    SessionLocal = get_session_local()
     db = SessionLocal()
     try:
         yield db
     finally:
         db.close()
+
+#For manual SQLAdmin
+def get_db_session():
+    SessionLocal = get_session_local()
+    return SessionLocal()

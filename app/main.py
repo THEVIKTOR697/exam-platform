@@ -5,9 +5,29 @@ from app.db.async_db import get_async_db
 from app.repositories.async_repo import async_user_repository
 from app.repositories.sync_repo import user_repository
 from app.api.routes import router
+from sqladmin import Admin, ModelView
+from app.models.user import User
+from app.models.exam import Exam
+from starlette.middleware.sessions import SessionMiddleware
+from app.auth.admin_auth import AdminAuth
+import os
+
 
 app = FastAPI(title="Exam Platform API")
+SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret")
 app.include_router(router)
+app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)
+admin = Admin(app, get_engine(), authentication_backend=AdminAuth(secret_key=SECRET_KEY))
+
+class UserAdmin(ModelView, model=User):
+    column_list = [User.id, User.email, User.is_admin]
+
+admin.add_view(UserAdmin)
+
+class ExamAdmin(ModelView, model=Exam):
+    column_list = [Exam.id, Exam.title, Exam.created_at]
+
+admin.add_view(ExamAdmin)
 
 @app.get("/")
 def root():
