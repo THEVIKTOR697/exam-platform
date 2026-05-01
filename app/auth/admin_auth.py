@@ -1,4 +1,4 @@
-# admin_auth.py
+# app.auth.admin_auth.py
 from sqladmin.authentication import AuthenticationBackend
 from fastapi import Request
 from sqlalchemy.orm import Session

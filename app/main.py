@@ -10,14 +10,23 @@ from app.models.user import User
 from app.models.exam import Exam
 from starlette.middleware.sessions import SessionMiddleware
 from app.auth.admin_auth import AdminAuth
+from app.auth.router import router as auth_router
+from fastapi.middleware.cors import CORSMiddleware
 import os
-
 
 app = FastAPI(title="Exam Platform API")
 SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret")
 app.include_router(router)
 app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)
 admin = Admin(app, get_engine(), authentication_backend=AdminAuth(secret_key=SECRET_KEY))
+app.include_router(auth_router)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # en prod restringir
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class UserAdmin(ModelView, model=User):
     column_list = [User.id, User.email, User.is_admin]
