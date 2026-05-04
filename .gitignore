@@ -1,19 +1,72 @@
-# Python
+# =========================
+# Python / Backend
+# =========================
 .venv/
+venv/
 __pycache__/
 *.pyc
-.env
+*.pyo
+*.pyd
+*.sqlite3
 
-# IDEs
+# Env files (⚠️ sensibles)
+.env
+.env.*
+!.env.example
+
+# =========================
+# Node / Next.js / Frontend
+# =========================
+node_modules/
+.next/
+out/
+dist/
+build/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# =========================
+# IDEs / Editor
+# =========================
 .vscode/
 .idea/
+*.swp
+*.swo
 
-# Terraform
+# =========================
+# OS / Misc
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Terraform / Infra
+# =========================
 .terraform/
 *.tfstate
 *.tfstate.backup
 terraform.tfvars
 *.pem
 
+# =========================
+# Docker
+# =========================
+docker-compose.override.yml
+
+# =========================
 # Otros
+# =========================
 *.log
+coverage/
+htmlcov/
+
+# =========================
+# Seguridad extra
+# =========================
+*.key
+*.crt
+*.csr

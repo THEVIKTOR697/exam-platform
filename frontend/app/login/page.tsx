@@ -3,6 +3,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 export default function LoginPage() {
   const router = useRouter();
 
@@ -18,7 +22,7 @@ export default function LoginPage() {
 
     try {
       const res = await fetch(
-        process.env.NEXT_PUBLIC_API_URL + "/auth/login",
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
         {
           method: "POST",
           headers: {
@@ -45,52 +49,58 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex h-screen items-center justify-center bg-gray-100">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-sm"
-      >
-        <h1 className="text-2xl font-bold mb-6 text-center">
-          Iniciar sesión
-        </h1>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted px-4">
+      <Card className="w-full max-w-md shadow-2xl border border-border/50">
+        <CardHeader>
+          <CardTitle className="text-2xl text-center">
+            Iniciar sesión
+          </CardTitle>
+        </CardHeader>
 
-        {error && (
-          <div className="mb-4 text-red-500 text-sm">{error}</div>
-        )}
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {error && (
+              <div className="text-sm text-red-500 text-center">
+                {error}
+              </div>
+            )}
 
-        <input
-          type="email"
-          placeholder="Email"
-          className="w-full p-3 border rounded mb-4"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
+            <Input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
 
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full p-3 border rounded mb-4"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+            <Input
+              type="password"
+              placeholder="Contraseña"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-blue-600 text-white p-3 rounded hover:bg-blue-700 transition"
-        >
-          {loading ? "Entrando..." : "Entrar"}
-        </button>
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={loading}
+            >
+              {loading ? "Entrando..." : "Entrar"}
+            </Button>
+          </form>
 
-        <p className="text-sm mt-4 text-center">
-          ¿No tienes cuenta?{" "}
-          <a href="/register" className="text-blue-600">
-            Regístrate
-          </a>
-        </p>
-      </form>
+          <p className="text-sm mt-6 text-center text-muted-foreground">
+            ¿No tienes cuenta?{" "}
+            <a
+              href="/register"
+              className="text-primary hover:underline"
+            >
+              Regístrate
+            </a>
+          </p>
+        </CardContent>
+      </Card>
     </div>
   );
 }
