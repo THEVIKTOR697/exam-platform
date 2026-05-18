@@ -4,25 +4,33 @@ from app.db.sync_db import get_engine, get_db
 from app.db.async_db import get_async_db
 from app.repositories.async_repo import async_user_repository
 from app.repositories.sync_repo import user_repository
-from app.api.routes import router
+from app.api.routes import api_router
 from sqladmin import Admin, ModelView
 from app.models.user import User
 from app.models.exam import Exam
 from starlette.middleware.sessions import SessionMiddleware
 from app.auth.admin_auth import AdminAuth
 from app.auth.router import router as auth_router
+from app.payments.router import api_router as payments_router
 from fastapi.middleware.cors import CORSMiddleware
 import os
 
 app = FastAPI(title="Exam Platform API")
 SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret")
-app.include_router(router)
-app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)
+success_url=os.getenv("STRIPE_SUCCESS_URL") + "?exam_id={CHECKOUT_SESSION_ID}"
+app.include_router(api_router)
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=SECRET_KEY,
+    same_site="none",
+    https_only=False)
+
 admin = Admin(app, get_engine(), authentication_backend=AdminAuth(secret_key=SECRET_KEY))
 app.include_router(auth_router)
+app.include_router(payments_router)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # en prod restringir
+    allow_origins=["http://localhost:3000"],  # en prod restringir
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

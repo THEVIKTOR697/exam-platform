@@ -3,12 +3,15 @@ from app.tasks.example_task import long_task
 from app.core.celery_app import celery
 from app.tasks.report_task import generate_users_report
 from fastapi.responses import FileResponse
+from app.api import results
+from app.api import exams
 import os
 
-router = APIRouter()
+api_router = APIRouter()
+api_router.include_router(results.api_router)
+api_router.include_router(exams.api_router)
 
-
-@router.post("/test-task")
+@api_router.post("/test-task")
 def test_task():
     task = long_task.delay(2, 3)
     return {
@@ -17,7 +20,7 @@ def test_task():
     }
 
 
-@router.get("/task/{task_id}")
+@api_router.get("/task/{task_id}")
 def get_task(task_id: str):
     result = celery.AsyncResult(task_id)
 
@@ -27,7 +30,7 @@ def get_task(task_id: str):
         "result": result.result if result.ready() else None,
     }   
 
-@router.post("/reports/users")
+@api_router.post("/reports/users")
 def create_report():
     task = generate_users_report.delay()
 
@@ -37,7 +40,7 @@ def create_report():
     }
 
 
-@router.get("/reports/{task_id}")
+@api_router.get("/reports/{task_id}")
 def get_report_status(task_id: str):
     result = celery.AsyncResult(task_id)
 
@@ -58,7 +61,7 @@ def get_report_status(task_id: str):
     return response
 
 
-@router.get("/reports/download/{task_id}")
+@api_router.get("/reports/download/{task_id}")
 def download_report(task_id: str):
     file_path = f"reports/report_{task_id}.csv"
 

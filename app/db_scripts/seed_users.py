@@ -1,10 +1,10 @@
-# seed.py
+# seed_users.py
 
-from app.db.sync_db import get_db
+from app.db.sync_db import get_db_session
 from app.models.user import User
 from app.auth.security import hash_password
 
-db = next(get_db())
+db = get_db_session()
 
 users = [
     User(

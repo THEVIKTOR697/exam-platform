@@ -11,21 +11,26 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post("/register")
 def register(data: RegisterSchema, db: Session = Depends(get_db)):
+    print(data.dict())
     existing = db.query(User).filter(User.email == data.email).first()
     if existing:
         raise HTTPException(status_code=400, detail="Email ya registrado")
 
-    user = create_user(db, data.email, data.password)
+    user = create_user(db, data.name, data.email, data.password)
     return {"message": "Usuario creado"}
 
 
 @router.post("/login", response_model=TokenResponse)
 def login(data: LoginSchema, db: Session = Depends(get_db)):
+    print('LOOOOOOOOOOOOOOOOOOOGIIIIIIIIIN')
     user = authenticate_user(db, data.email, data.password)
 
     if not user:
         raise HTTPException(status_code=401, detail="Credenciales inválidas")
 
-    token = create_access_token({"sub": str(user.id)})
+    token = create_access_token({
+        "sub": str(user.id),
+        "email": user.email
+    })
 
     return {"access_token": token}
