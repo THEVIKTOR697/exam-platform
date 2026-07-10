@@ -6,10 +6,10 @@ from .schemas import RegisterSchema, LoginSchema, TokenResponse
 from .service import create_user, authenticate_user
 from .security import create_access_token
 
-router = APIRouter(prefix="/auth", tags=["auth"])
+api_router = APIRouter(prefix="/auth", tags=["Auth"])
 
 
-@router.post("/register")
+@api_router.post("/register")
 def register(data: RegisterSchema, db: Session = Depends(get_db)):
     print(data.dict())
     existing = db.query(User).filter(User.email == data.email).first()
@@ -20,7 +20,7 @@ def register(data: RegisterSchema, db: Session = Depends(get_db)):
     return {"message": "Usuario creado"}
 
 
-@router.post("/login", response_model=TokenResponse)
+@api_router.post("/login", response_model=TokenResponse)
 def login(data: LoginSchema, db: Session = Depends(get_db)):
     print('LOOOOOOOOOOOOOOOOOOOGIIIIIIIIIN')
     user = authenticate_user(db, data.email, data.password)

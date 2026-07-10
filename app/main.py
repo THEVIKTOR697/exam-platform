@@ -5,14 +5,15 @@ from app.db.async_db import get_async_db
 from app.repositories.async_repo import async_user_repository
 from app.repositories.sync_repo import user_repository
 from app.api.routes import api_router
-from app.api.exams import api_router as exam_router
+from app.exams.router import api_router as exam_router
 from sqladmin import Admin, ModelView
 from app.models.user import User
 from app.models.exam import Exam
 from starlette.middleware.sessions import SessionMiddleware
 from app.auth.admin_auth import AdminAuth
-from app.auth.router import router as auth_router
+from app.auth.router import api_router as auth_router
 from app.payments.router import api_router as payments_router
+from app.results.router import api_router as results_router
 from fastapi.middleware.cors import CORSMiddleware
 import os
 
@@ -29,6 +30,7 @@ admin = Admin(app, get_engine(), authentication_backend=AdminAuth(secret_key=SEC
 app.include_router(auth_router)
 app.include_router(payments_router)
 app.include_router(exam_router)
+app.include_router(results_router)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"],  # en prod restringir

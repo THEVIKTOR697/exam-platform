@@ -3,13 +3,9 @@ from app.tasks.example_task import long_task
 from app.core.celery_app import celery
 from app.tasks.report_task import generate_users_report
 from fastapi.responses import FileResponse
-from app.api import results
-from app.api import exams
 import os
 
 api_router = APIRouter()
-api_router.include_router(results.api_router)
-api_router.include_router(exams.api_router)
 
 @api_router.post("/test-task")
 def test_task():
@@ -28,7 +24,7 @@ def get_task(task_id: str):
         "task_id": task_id,
         "status": result.status,
         "result": result.result if result.ready() else None,
-    }   
+    }
 
 @api_router.post("/reports/users")
 def create_report():

@@ -9,7 +9,7 @@ from app.auth.security import get_current_user
 from app.db.sync_db import get_db
 from app.models import Purchase
 
-api_router = APIRouter(prefix="/payments", tags=["payments"])
+api_router = APIRouter(prefix="/payments", tags=["Payments"])
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 log = logging.getLogger(__name__)
 
