@@ -16,6 +16,7 @@ def get_results(db: Session = Depends(get_db), user=Depends(get_current_user)):
                 "title": r.exam.title,
                 "score": r.score,
                 "passed": r.passed,
+                "created_at": r.created_at.strftime("%d/%m/%Y %H:%M hrs"),
             }
             for r in results
         ]

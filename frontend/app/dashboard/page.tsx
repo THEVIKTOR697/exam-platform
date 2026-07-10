@@ -27,7 +27,7 @@ export default function Dashboard() {
                             Authorization: `Bearer ${token}`,
                         },
                     }),
-                    fetch(`${process.env.NEXT_PUBLIC_API_URL}/exams`),
+                    fetch(`${process.env.NEXT_PUBLIC_API_URL}/exams/`),
                 ]);
 
                 if (!resultsRes.ok) {
@@ -40,8 +40,6 @@ export default function Dashboard() {
                     }
                 }
 
-                console.log("resultsRes:", resultsRes);
-                console.log("status:", resultsRes.status);
                 const resultsData = await resultsRes.json();
                 console.log("resultsData:", resultsData);
                 const examsData = await examsRes.json();
@@ -79,8 +77,9 @@ export default function Dashboard() {
                     results.map((r, i) => (
                         <div key={i} className="border p-3 mb-2 rounded">
                             <p className="font-semibold">{r.title}</p>
-                            <p>{r.score}%</p>
-                            <p>{r.passed ? "Aprobado ✅" : "Reprobado ❌"}</p>
+                            <p>Score: {r.score}%</p>
+                            <p>Resultado: {r.passed ? "Aprobado ✅" : "Reprobado ❌"}</p>
+                            <p>Fecha: {r.created_at}</p>
                         </div>
                     ))
                 )}
@@ -100,7 +99,6 @@ export default function Dashboard() {
 
                             <button
                                 onClick={() => {
-                                    console.log("NAVIGATING TO:", exam.id)
                                     console.log("CLICK EXAM:", exam)
                                     router.push(`/checkout/${exam.id}`)
                                 }

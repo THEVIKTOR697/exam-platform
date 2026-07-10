@@ -1,11 +1,7 @@
 "use client"
 
-import {loadStripe} from "@stripe/stripe-js"
 import { useParams } from "next/navigation"
 
-// const stripePromise = loadStripe(
-//     process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
-// )
 const token = localStorage.getItem("token")
 
 export default function Checkout(){
