@@ -1,0 +1,25 @@
+from sqlalchemy import Column, Integer, ForeignKey, String, DateTime, UniqueConstraint
+from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
+from app.db.base import Base
+
+class Enrollment(Base):
+
+    __tablename__ = "enrollments"
+
+    __table_args__ = (
+        UniqueConstraint("user_id", "offering_id"),
+    )
+
+    id = Column(Integer, primary_key=True)
+
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    offering_id = Column(Integer, ForeignKey("course_offerings.id"), nullable=False)
+
+    status = Column(String, default="active")
+
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    dropped_at = Column(DateTime, nullable=True)
+
+    user = relationship("User", backref="enrollments")
+    offering = relationship("CourseOffering", backref="enrollments")
