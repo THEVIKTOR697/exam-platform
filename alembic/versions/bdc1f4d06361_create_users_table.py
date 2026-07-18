@@ -1,4 +1,4 @@
-"""Create users table
+"""create_users_table
 
 Revision ID: bdc1f4d06361
 Revises: 

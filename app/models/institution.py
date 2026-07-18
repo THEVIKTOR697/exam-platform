@@ -25,5 +25,15 @@ class Institution(Base):
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
-    memberships = relationship("Membership", back_populates="institution")
+    memberships = relationship(
+        "Membership",
+        back_populates="institution",
+        cascade="all, delete-orphan"
+    )
+    subjects = relationship("Subject", back_populates="institution")
 
+    certification_exams = relationship(
+        "CertificationExam",
+        back_populates="institution",
+        cascade="all, delete-orphan"
+    )

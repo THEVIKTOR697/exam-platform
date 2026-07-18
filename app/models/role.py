@@ -1,4 +1,6 @@
 from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import relationship
+
 from app.db.base import Base
 
 class Role(Base):
@@ -7,3 +9,8 @@ class Role(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String, unique=True, nullable=False)
     description = Column(String, nullable=False)
+
+    memberships = relationship(
+        "Membership",
+        back_populates="role",
+    )

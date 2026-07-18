@@ -10,16 +10,30 @@ class CertificationExam(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, unique=True)
     description = Column(String, nullable=True)
-
     price = Column(Numeric(10, 2), nullable=False)
-
     is_active = Column(Boolean, default=True)
-
     created_at = Column(DateTime(timezone=True), server_default=func.now())
-    results = relationship("Result", backref="exam")
 
     institution_id = Column(ForeignKey("institutions.id"), nullable=False)
     course_id = Column(ForeignKey("certification_courses.id"), nullable=True)
 
-    institution = relationship("Institution")
-    course = relationship("CertificationCourse")
+    results = relationship(
+        "CertificationResult",
+        back_populates="certification_exam"
+    )
+
+    institution = relationship(
+        "Institution",
+        back_populates="certification_exams"
+    )
+
+    certification_course = relationship(
+        "CertificationCourse",
+        back_populates="certification_exam"
+    )
+
+    questions = relationship(
+        "Question",
+        back_populates="exam",
+        cascade="all, delete-orphan"
+    )

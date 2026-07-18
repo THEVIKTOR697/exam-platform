@@ -1,4 +1,4 @@
-"""Create purchase table
+"""create_purchase_table
 
 Revision ID: 2a58f18b07e7
 Revises: 6c688e3b0b7e
@@ -55,7 +55,7 @@ def upgrade() -> None:
         ),
 
         sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
-        sa.ForeignKeyConstraint(['exam_id'], ['exams.id'], ondelete='CASCADE'),
+        sa.ForeignKeyConstraint(['exam_id'], ['certification_exams.id'], ondelete='CASCADE'),
 
         sa.UniqueConstraint('user_id', 'exam_id', name='uq_user_exam_purchase'),
     )

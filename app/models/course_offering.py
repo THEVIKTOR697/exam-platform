@@ -23,6 +23,6 @@ class CourseOffering(Base):
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
-    # relaciones
     subject = relationship("Subject", back_populates="offerings")
     schedules = relationship("Schedule", back_populates="offering")
+    offering = relationship("CourseOffering", back_populates="enrollments")

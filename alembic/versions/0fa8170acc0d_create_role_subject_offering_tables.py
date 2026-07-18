@@ -1,4 +1,4 @@
-"""create institution, role, subject and offering tables
+"""create_institution_role_subject_and_offerings tables
 
 Revision ID: 0fa8170acc0d
 Revises: 7bdb7cb3b73a
@@ -19,25 +19,6 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    # Institutions
-    op.create_table(
-        "institutions",
-        sa.Column("id", sa.Integer(), primary_key=True),
-        sa.Column("name", sa.String(), nullable=False),
-        sa.Column("slug", sa.String(), nullable=False),
-        sa.Column("description", sa.String(), nullable=True),
-        sa.Column("email", sa.String(), nullable=True),
-        sa.Column("phone", sa.String(), nullable=True),
-        sa.Column("website", sa.String(), nullable=True),
-        sa.Column("country", sa.String(), nullable=True),
-        sa.Column("state", sa.String(), nullable=True),
-        sa.Column("city", sa.String(), nullable=True),
-        sa.Column("address", sa.String(), nullable=True),
-        sa.Column("is_active", sa.Boolean(), nullable=False, server_default=sa.true()),
-        sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.func.now()),
-        sa.UniqueConstraint("slug", name="uq_institutions_slug"),
-    )
-
     # Roles
     op.create_table(
         "roles",
@@ -58,7 +39,7 @@ def upgrade() -> None:
         sa.Column("is_active", sa.Boolean(), nullable=False, server_default=sa.true()),
         sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.func.now()),
         sa.Column("institution_id", sa.Integer(), sa.ForeignKey("institutions.id")),
-        sa.UniqueConstraint("code", name="uq_subjects_code"),
+        sa.UniqueConstraint("code", "institution_id", name="uq_subject_code_per_institution"),
     )
 
     # Course Offerings
@@ -80,4 +61,3 @@ def downgrade():
     op.drop_table("course_offerings")
     op.drop_table("subjects")
     op.drop_table("roles")
-    op.drop_table("institutions")

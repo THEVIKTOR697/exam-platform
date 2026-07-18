@@ -1,5 +1,5 @@
 # seed_questions.py
-
+from app.models import CertificationExam
 from app.models.question import Question
 from app.models.option import Option
 from app.db.sync_db import get_db_session
@@ -7,7 +7,14 @@ from app.db.sync_db import get_db_session
 db = get_db_session()
 
 def seed_questions():
-    q1 = Question(exam_id=1, text="¿Qué es Python?")
+    exams = db.query(CertificationExam).all()
+    if not exams:
+        print("No exams found. Please seed exams first.")
+        return
+    e1=exams[0]
+    e2=exams[0]
+
+    q1 = Question(exam_id=e1.id, text="¿Qué es Python?")
     db.add(q1)
     db.flush()
 
@@ -17,7 +24,7 @@ def seed_questions():
         Option(question_id=q1.id, text="Sistema operativo", is_correct=False),
     ]
 
-    q2 = Question(exam_id=1, text="¿Qué son los tipos de datos mutables e inmutables?")
+    q2 = Question(exam_id=e1.id, text="¿Qué son los tipos de datos mutables e inmutables?")
     db.add(q2)
     db.flush()
 
@@ -27,7 +34,7 @@ def seed_questions():
         Option(question_id=q2.id, text="Son datos estadisticos financieros", is_correct=False),
     ]
 
-    q3 = Question(exam_id=1, text="Diferencia entre Lista y Tupla")
+    q3 = Question(exam_id=e1.id, text="Diferencia entre Lista y Tupla")
     db.add(q3)
     db.flush()
 
@@ -37,7 +44,7 @@ def seed_questions():
         Option(question_id=q3.id, text="Una tupla se puede modificar despues de su creacion", is_correct=False),
     ]
 
-    q4 = Question(exam_id=2, text="¿Cual es la raiz cuadrada de 144?")
+    q4 = Question(exam_id=e2.id, text="¿Cual es la raiz cuadrada de 144?")
     db.add(q4)
     db.flush()
 
@@ -47,7 +54,7 @@ def seed_questions():
         Option(question_id=q4.id, text="60", is_correct=False),
     ]
 
-    q5 = Question(exam_id=2, text="¿Cuanto vale pi(\(\pi \))?")
+    q5 = Question(exam_id=e2.id, text="¿Cuanto vale pi(\(\pi \))?")
     db.add(q5)
     db.flush()
 
@@ -57,7 +64,7 @@ def seed_questions():
         Option(question_id=q5.id, text="0", is_correct=False),
     ]
 
-    q6 = Question(exam_id=2, text="Que es un Axioma?")
+    q6 = Question(exam_id=e2.id, text="Que es un Axioma?")
     db.add(q6)
     db.flush()
 

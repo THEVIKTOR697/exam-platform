@@ -17,7 +17,7 @@ class Purchase(Base):
 
     exam_id = Column(
         Integer,
-        ForeignKey("exams.id", ondelete="CASCADE"),
+        ForeignKey("certification_exams.id", ondelete="CASCADE"),
         nullable=False,
         index=True
     )

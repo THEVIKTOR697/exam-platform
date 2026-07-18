@@ -21,5 +21,5 @@ class Enrollment(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     dropped_at = Column(DateTime, nullable=True)
 
-    user = relationship("User", backref="enrollments")
-    offering = relationship("CourseOffering", backref="enrollments")
+    user = relationship("User", back_populates="enrollments")
+    offering = relationship("CourseOffering", back_populates="enrollments")

@@ -1,4 +1,4 @@
-from app.models.exam import Exam
+from app.models.certification_exam import CertificationExam
 from app.db.sync_db import get_session_local
 
 SessionLocal = get_session_local()
@@ -6,17 +6,19 @@ SessionLocal = get_session_local()
 def seed_exams():
     db = SessionLocal()
 
-    exam1 = Exam(
+    exam1 = CertificationExam(
+        institution_id=1,
         title="Python Básico",
         description="Evaluación de fundamentos de Python",
-        price=0.99,
+        price=1.99,
         is_active=True
     )
 
-    exam2 = Exam(
+    exam2 = CertificationExam(
+        institution_id=2,
         title="Matemáticas Básicas",
         description="Evaluación de conocimientos matemáticos",
-        price=0.99,
+        price=1.99,
         is_active=True
     )
 

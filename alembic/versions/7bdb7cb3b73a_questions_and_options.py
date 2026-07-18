@@ -1,4 +1,4 @@
-"""questions and options
+"""questions_and_ options
 
 Revision ID: 7bdb7cb3b73a
 Revises: 2a58f18b07e7
@@ -25,7 +25,7 @@ def upgrade():
         sa.Column("exam_id", sa.Integer(), nullable=False),
         sa.Column("text", sa.String(), nullable=False),
 
-        sa.ForeignKeyConstraint(["exam_id"], ["exams.id"], ondelete="CASCADE"),
+        sa.ForeignKeyConstraint(["exam_id"], ["certification_exams.id"], ondelete="CASCADE"),
     )
 
     op.create_index("ix_questions_exam_id", "questions", ["exam_id"])

@@ -8,7 +8,7 @@ from app.api.routes import api_router
 from app.exams.router import api_router as exam_router
 from sqladmin import Admin, ModelView
 from app.models.user import User
-from app.models.exam import Exam
+from app.models.certification_exam import CertificationExam
 from starlette.middleware.sessions import SessionMiddleware
 from app.auth.admin_auth import AdminAuth
 from app.auth.router import api_router as auth_router
@@ -44,8 +44,8 @@ class UserAdmin(ModelView, model=User):
 
 admin.add_view(UserAdmin)
 
-class ExamAdmin(ModelView, model=Exam):
-    column_list = [Exam.id, Exam.title, Exam.created_at]
+class ExamAdmin(ModelView, model=CertificationExam):
+    column_list = [CertificationExam.id, CertificationExam.title, CertificationExam.created_at]
 
 admin.add_view(ExamAdmin)
 

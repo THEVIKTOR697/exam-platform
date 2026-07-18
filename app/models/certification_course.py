@@ -17,4 +17,4 @@ class CertificationCourse(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     institution = relationship("Institution")
-    exams = relationship("CertificationExam", back_populates="course")
+    certification_exam = relationship("CertificationExam", back_populates="certification_course")
