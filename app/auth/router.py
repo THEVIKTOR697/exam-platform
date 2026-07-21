@@ -5,6 +5,8 @@ from app.models.user import User
 from .schemas import RegisterSchema, LoginSchema, TokenResponse
 from .service import create_user, authenticate_user
 from .security import create_access_token
+from app.auth.security import get_current_user
+
 
 api_router = APIRouter(prefix="/auth", tags=["Auth"])
 
@@ -34,3 +36,8 @@ def login(data: LoginSchema, db: Session = Depends(get_db)):
     })
 
     return {"access_token": token}
+
+@api_router.get("/me")
+def get_current_user_data(user=Depends(get_current_user)):
+    return {"name": user.name, "email": user.email, "id": user.id}
+{}

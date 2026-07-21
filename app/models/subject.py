@@ -9,6 +9,7 @@ class Subject(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
+    grade_id = Column(ForeignKey("grades.id"))
     description = Column(String, nullable=True)
     code = Column(String, unique=True, nullable=False)
     credits = Column(Integer, nullable=True)

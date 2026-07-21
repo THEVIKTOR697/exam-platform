@@ -16,17 +16,15 @@ from app.payments.router import api_router as payments_router
 from app.results.router import api_router as results_router
 from fastapi.middleware.cors import CORSMiddleware
 import os
+import logging
 
+logging.basicConfig(
+    level=logging.INFO,  # 👈 ESTA es la clave
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
 app = FastAPI(title="Exam Platform API")
 SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret")
 app.include_router(api_router)
-app.add_middleware(
-    SessionMiddleware,
-    secret_key=SECRET_KEY,
-    same_site="none",
-    https_only=False)
-
-admin = Admin(app, get_engine(), authentication_backend=AdminAuth(secret_key=SECRET_KEY))
 app.include_router(auth_router)
 app.include_router(payments_router)
 app.include_router(exam_router)
@@ -38,6 +36,13 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=SECRET_KEY,
+    same_site="none",
+    https_only=False)
+
+admin = Admin(app, get_engine(), authentication_backend=AdminAuth(secret_key=SECRET_KEY))
 
 class UserAdmin(ModelView, model=User):
     column_list = [User.id, User.email, User.is_admin]

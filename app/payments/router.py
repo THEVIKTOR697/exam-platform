@@ -12,7 +12,7 @@ from app.models import Purchase
 api_router = APIRouter(prefix="/payments", tags=["Payments"])
 stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 log = logging.getLogger(__name__)
-
+log.setLevel(logging.INFO)
 
 class CheckoutRequest(BaseModel):
     exam_id: int
@@ -52,6 +52,8 @@ def create_checkout_session(
 
 @api_router.post("/webhook")
 async def stripe_webhook(request: Request, db: Session = Depends(get_db)):
+    print('SIUUUUUU')
+    log.info("WWWWWWWWWWWWWWWWWWWWWWebhook received")
     payload = await request.body()
     sig_header = request.headers.get("stripe-signature")
     try:
@@ -66,6 +68,7 @@ async def stripe_webhook(request: Request, db: Session = Depends(get_db)):
     log.info(f"EEEEEEEEEEEEEEEEEVNTO: {event}")
     # PAGO COMPLETADO
     if event["type"] == "checkout.session.completed":
+        print('PAGO COMPLETADO STRIPE')
         session = event["data"]["object"].to_dict()
         log.info(f"Checkout session: {session}")
         if session.get("payment_status") != "paid":
@@ -157,8 +160,8 @@ def verify_session(
     if not purchase:
         # ⚠️ webhook aún no llegó (Stripe puede tardar unos segundos)
         raise HTTPException(
-            status_code=404,
-            detail="Purchase not found yet, try again"
+            status_code=202,
+            detail="Purchase not found yet, webhook may not respond yet , try again"
         )
 
     return {

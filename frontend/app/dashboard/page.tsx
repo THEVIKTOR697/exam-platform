@@ -9,6 +9,8 @@ export default function Dashboard() {
     const [results, setResults] = useState<any[]>([]);
     const [exams, setExams] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState<any>(null);
+
     const [activeSection, setActiveSection] = useState("results");
 
     useEffect(() => {
@@ -22,7 +24,7 @@ export default function Dashboard() {
             }
 
             try {
-                const [resultsRes, examsRes] = await Promise.all([
+                const [resultsResponse, examsResponse] = await Promise.all([
                     fetch(`${process.env.NEXT_PUBLIC_API_URL}/results/`, {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -31,28 +33,39 @@ export default function Dashboard() {
                     fetch(`${process.env.NEXT_PUBLIC_API_URL}/exams/`),
                 ]);
 
-                if (!resultsRes.ok) {
-                    console.error("Error auth:", resultsRes.status);
+                if (!resultsResponse.ok) {
+                    console.error("Error auth:", resultsResponse.status);
 
-                    if (resultsRes.status === 401) {
+                    if (resultsResponse.status === 401) {
                         localStorage.removeItem("token");
                         router.push("/login");
                         return;
                     }
                 }
 
-                const resultsData = await resultsRes.json();
-                console.log("resultsData:", resultsData);
-                const examsData = await examsRes.json();
-                console.log("examsData:", examsData);
+                const [userResponse] = await Promise.all([
+                    fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me/`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    })
+                ])
+                const userData = await userResponse.json();
+                const resultsData = await resultsResponse.json();
+                const examsData = await examsResponse.json();
                 const normalizedExams = examsData.map((e: any) => ({
                     id: e.id ?? e.exam_id,
                     title: e.title,
                     price: e.price,
                 }));
+                console.log("userData:", userData);
+                console.log("resultsData:", resultsData);
+                console.log("examsData:", examsData);
                 console.log("NORMALIZED:", normalizedExams);
+                setUser(userData);
                 setResults(resultsData.results);
                 setExams(normalizedExams);
+
             } catch (err) {
                 console.error("Error cargando datos", err);
             } finally {
@@ -94,11 +107,11 @@ export default function Dashboard() {
                         onClick={() => setActiveSection("results")}
                         className="block w-full text-left hover:text-gray-300"
                     >
-                        Mis certificaciones
+                        Mis resultados
                     </button>
 
                     <button
-                        onClick={() => setActiveSection("exams")}
+                        onClick={() => setActiveSection("available_certifications")}
                         className="block w-full text-left hover:text-gray-300"
                     >
                         Tienda
@@ -110,7 +123,37 @@ export default function Dashboard() {
             <main className="ml-64 p-6 w-full space-y-8">
                 {/*<h1 className="text-3xl font-bold">KK</h1>*/}
 
-                {/* RESULTADOS */}
+                {/* PROFILE */}
+                {activeSection === "profile" && (
+                    <div>
+                        <h2 className="text-xl font-bold">Mi perfil</h2>
+                        <p className="mt-2 text-gray-600">
+                            Consultar y modificar mis datos personales
+                        </p>
+                        <p>{user?.id}</p>
+                        <p>{user?.name}</p>
+                        <p>{user?.email}</p>
+                    </div>
+                )}
+                {/* SCHEDULE */}
+                {activeSection === "schedule" && (
+                    <div>
+                        <h2 className="text-xl font-bold">Horario escolar</h2>
+                        <p className="mt-2 text-gray-600">
+                            (Aquí puedes renderizar tu horario después)
+                        </p>
+                    </div>
+                )}
+                {/* REPORT CARD */}
+                {activeSection === "report_card" && (
+                    <div>
+                        <h2 className="text-xl font-bold">Mi perfil</h2>
+                        <p className="mt-2 text-gray-600">
+                            Consultar calificaciones
+                        </p>
+                    </div>
+                )}
+                {/* MY RESULTS */}
                 {activeSection === "results" && (
                     <div>
                         <h2 className="text-xl font-bold mb-4">Certificaciones</h2>
@@ -132,35 +175,8 @@ export default function Dashboard() {
                     </div>
                 )}
 
-                {/* PROFILE */}
-                {activeSection === "profile" && (
-                    <div>
-                        <h2 className="text-xl font-bold">Mi perfil</h2>
-                        <p className="mt-2 text-gray-600">
-                            Consultar y modificar mis datos personales
-                        </p>
-                    </div>
-                )}
-                {/* HORARIO */}
-                {activeSection === "schedule" && (
-                    <div>
-                        <h2 className="text-xl font-bold">Horario escolar</h2>
-                        <p className="mt-2 text-gray-600">
-                            (Aquí puedes renderizar tu horario después)
-                        </p>
-                    </div>
-                )}
-                {/* PROFILE */}
-                {activeSection === "report_card" && (
-                    <div>
-                        <h2 className="text-xl font-bold">Mi perfil</h2>
-                        <p className="mt-2 text-gray-600">
-                            Consultar calificaciones
-                        </p>
-                    </div>
-                )}
-                {/* EXÁMENES */}
-                {activeSection === "exams" && (
+                {/* CERTIFICATIONS SHOP */}
+                {activeSection === "available_certifications" && (
                     <div>
                         <h2 className="text-2xl font-bold mb-4">
                             Certificaciones disponibles

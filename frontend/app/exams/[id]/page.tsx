@@ -36,14 +36,13 @@ export default function ExamPage() {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState("")
 
-    console.log("APIUUUUUUUUUURL:", process.env.NEXT_PUBLIC_API_URL)
-
     useEffect(() => {
         if (!examId) return
         fetchExam()
     }, [examId])
 
     const fetchExam = async () => {
+        console.log('1111111')
         try {
             const token = localStorage.getItem("token");
             console.log('TOOOOOOOOOOOOOOOOOOOOOO', token)
@@ -94,6 +93,7 @@ export default function ExamPage() {
         }
     }
     const handleSubmitExam = async () => {
+    console.log('2222222222222')
         try {
             const token = localStorage.getItem("token")
 

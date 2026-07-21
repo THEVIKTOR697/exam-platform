@@ -27,7 +27,7 @@ export default function SuccessPage() {
                   `${process.env.NEXT_PUBLIC_API_URL}/payments/verify-session?session_id=${sessionId}`
                     )
                     console.log(res)
-                    if (res.status === 404) {
+                    if (res.status === 202) {
                         // webhook aún no llega
                         await sleep(1000)
                         continue

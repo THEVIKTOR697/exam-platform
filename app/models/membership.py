@@ -19,4 +19,4 @@ class Membership(Base):
     user = relationship("User", back_populates="memberships")
     institution = relationship("Institution", back_populates="memberships")
     role = relationship("Role", back_populates="memberships")
-
+    student = relationship("Student", back_populates="membership", uselist=False)

@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from app.db.sync_db import get_db
 from app.exams.schemas import SubmitExamRequest
 from app.exams.schemas import ExamResponse
-from app.models import CertificationResult, Exam
+from app.models import CertificationResult, CertificationExam
 from app.models.question import Question
 from app.models.option import Option
 from app.models.purchase import Purchase
@@ -16,7 +16,7 @@ api_router = APIRouter(prefix="/exams", tags=["Exams"])
 
 @api_router.get("/", response_model=List[ExamResponse])
 def get_exams(db: Session = Depends(get_db)):
-    exams = db.query(Exam).all()
+    exams = db.query(CertificationExam).all()
     return exams
 
 @api_router.get("/{exam_id}/questions")
