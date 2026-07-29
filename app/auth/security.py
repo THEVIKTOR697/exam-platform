@@ -9,6 +9,10 @@ from sqlalchemy.orm import Session
 from app.db.sync_db import get_db
 from app.models.user import User
 import os
+import logging
+
+log = logging.getLogger(__name__)
+log.setLevel(logging.INFO)
 
 TOKEN_SECRET_KEY = os.getenv("TOKEN_SECRET_KEY")
 ALGORITHM = "HS256"
@@ -32,14 +36,14 @@ def verify_password(password: str, hashed: str) -> bool:
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode = data.copy()
-
-    expire = datetime.now(timezone.utc) + (
+    now = datetime.now(timezone.utc)
+    expire = now + (
         expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     )
 
     to_encode.update({
-        "exp": expire,
-        "iat": datetime.now(timezone.utc),  # issued at
+        "expire_at": int(expire.timestamp()),
+        "issued_at": int(now.timestamp()),
     })
 
     encoded_jwt = jwt.encode(to_encode, TOKEN_SECRET_KEY, algorithm=ALGORITHM)
@@ -58,11 +62,8 @@ def get_current_user(
 
     try:
         payload = jwt.decode(token, TOKEN_SECRET_KEY, algorithms=[ALGORITHM])
-
-        #user_id: int = payload.get("user_id")
-        user_id = payload.get("sub")
-        user_name = payload.get("email")
-
+        print('LOGIN_PAYLOAD: ', payload)
+        user_id = payload.get("user_id")
         if user_id is None:
             raise credentials_exception
 

@@ -31,13 +31,31 @@ def login(data: LoginSchema, db: Session = Depends(get_db)):
         raise HTTPException(status_code=401, detail="Credenciales inválidas")
 
     token = create_access_token({
-        "sub": str(user.id),
+        "user_id": str(user.id),
         "email": user.email
     })
 
     return {"access_token": token}
 
 @api_router.get("/me")
-def get_current_user_data(user=Depends(get_current_user)):
-    return {"name": user.name, "email": user.email, "id": user.id}
-{}
+def get_current_student_data(user=Depends(get_current_user)):
+
+    student_membership = next(
+        (m for m in user.memberships if m.role.name == "student"),
+        None
+    )
+
+    if not student_membership:
+        return {
+            "id": user.id,
+            "name": user.name,
+            "email": user.email,
+            "institution": None,
+        }
+
+    return {
+        "id": user.id,
+        "name": user.name,
+        "email": user.email,
+        "institution": student_membership.institution.name,
+    }
