@@ -17,7 +17,7 @@ class CertificationExam(Base):
     institution_id = Column(ForeignKey("institutions.id"), nullable=False)
     course_id = Column(ForeignKey("certification_courses.id"), nullable=True)
 
-    results = relationship(
+    certification_results = relationship(
         "CertificationResult",
         back_populates="certification_exam"
     )

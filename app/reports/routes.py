@@ -5,7 +5,7 @@ from app.tasks.report_task import generate_users_report
 from fastapi.responses import FileResponse
 import os
 
-api_router = APIRouter()
+api_router = APIRouter(prefix="/reports_router", tags=["Reports"])
 
 @api_router.post("/test-task")
 def test_task():

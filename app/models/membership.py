@@ -1,5 +1,7 @@
-from sqlalchemy import Column, Integer, ForeignKey, UniqueConstraint, Index
+from sqlalchemy import Column, Integer, ForeignKey, UniqueConstraint, Index, DateTime
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
+
 from app.db.base import Base
 
 class Membership(Base):
@@ -11,10 +13,10 @@ class Membership(Base):
     )
 
     id = Column(Integer, primary_key=True)
-
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     institution_id = Column(Integer, ForeignKey("institutions.id"), nullable=False)
     role_id = Column(Integer, ForeignKey("roles.id"), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     user = relationship("User", back_populates="memberships")
     institution = relationship("Institution", back_populates="memberships")

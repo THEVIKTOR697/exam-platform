@@ -39,7 +39,7 @@ export default function SuccessPage() {
                         setMessage("¡Pago confirmado! Redirigiendo... 🚀")
 
                         setTimeout(() => {
-                            router.push(`/exams/${data.exam_id}`)
+                            router.push(`/certification_exams/${data.exam_id}`)
                         }, 1000)
 
                         return
@@ -111,7 +111,7 @@ function sleep(ms: number) {
 //
 //         {title && (
 //             <Link
-//                 href={`/exams/${title}`}
+//                 href={`/certification_exams/${title}`}
 //                 className="inline-block mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
 //             >
 //                 Ir al examen 🚀

@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.db.sync_db import get_db
-from app.exams.schemas import SubmitExamRequest
-from app.exams.schemas import ExamResponse
+from app.certification_exams.schemas import SubmitExamRequest
+from app.certification_exams.schemas import ExamResponse
 from app.models import CertificationResult, CertificationExam
 from app.models.question import Question
 from app.models.option import Option
@@ -12,7 +12,7 @@ from typing import List
 
 import logging
 log = logging.getLogger(__name__)
-api_router = APIRouter(prefix="/exams", tags=["Exams"])
+api_router = APIRouter(prefix="/certification_exams", tags=["Exams"])
 
 @api_router.get("/", response_model=List[ExamResponse])
 def get_exams(db: Session = Depends(get_db)):

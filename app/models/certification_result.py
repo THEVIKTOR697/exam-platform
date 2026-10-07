@@ -19,5 +19,5 @@ class CertificationResult(Base):
 
     certification_exam = relationship(
         "CertificationExam",
-        back_populates="results"
+        back_populates="certification_results"
     )

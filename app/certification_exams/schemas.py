@@ -1,4 +1,4 @@
-#exams/schemas.py
+#certification_exams/schemas.py
 from pydantic import BaseModel
 from typing import List
 

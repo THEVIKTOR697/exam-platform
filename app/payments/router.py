@@ -62,8 +62,13 @@ async def stripe_webhook(request: Request, db: Session = Depends(get_db)):
             sig_header,
             os.getenv("STRIPE_WEBHOOK_SECRET")
         )
-    except Exception:
-        raise HTTPException(status_code=400, detail="Invalid webhook")
+    except ValueError as e:
+        log.exception("Invalid payload")
+        raise HTTPException(status_code=400, detail="Invalid payload")
+
+    except stripe.error.SignatureVerificationError as e:
+        log.exception("Invalid Stripe signature")
+        raise HTTPException(status_code=400, detail="Invalid signature")
 
     log.info(f"EEEEEEEEEEEEEEEEEVNTO: {event}")
     # PAGO COMPLETADO
@@ -72,7 +77,7 @@ async def stripe_webhook(request: Request, db: Session = Depends(get_db)):
         session = event["data"]["object"].to_dict()
         log.info(f"Checkout session: {session}")
         if session.get("payment_status") != "paid":
-            return
+            raise HTTPException(status_code=400, detail="Payment not completed")
 
         metadata = session.get("metadata", {}) or {}
         user_id = metadata.get("user_id")

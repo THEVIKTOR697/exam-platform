@@ -13,7 +13,7 @@ class Student(Base):
     student_number = Column(String, unique=True, nullable=False)
     current_grade_id = Column(Integer, ForeignKey("grades.id"), nullable=False)
     is_active = Column(Boolean, default=True)
-    created_at = Column(DateTime, server_default=func.now())
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     enrollments = relationship("Enrollment", back_populates="student")
     membership = relationship("Membership", back_populates="student")

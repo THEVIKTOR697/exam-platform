@@ -52,7 +52,7 @@ export default function ExamPage() {
             }
             // 🔐 1. Validar acceso
             const accessRes = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/exams/${examId}/access`,
+                `${process.env.NEXT_PUBLIC_API_URL}/certification_exams/${examId}/access`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -80,7 +80,7 @@ export default function ExamPage() {
 
             // 📥 2. Obtener preguntas
             const res = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/exams/${examId}/questions`
+                `${process.env.NEXT_PUBLIC_API_URL}/certification_exams/${examId}/questions`
             )
 
             const data = await res.json()
@@ -110,7 +110,7 @@ export default function ExamPage() {
             )
 
             const res = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/exams/submit-exam`,
+                `${process.env.NEXT_PUBLIC_API_URL}/certification_exams/submit-exam`,
                 {
                     method: "POST",
                     headers: {

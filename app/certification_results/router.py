@@ -4,14 +4,14 @@ from app.db.sync_db import get_db
 from app.auth.security import get_current_user
 from app.models.certification_result import CertificationResult
 
-api_router = APIRouter(prefix="/results", tags=["Results"])
+api_router = APIRouter(prefix="/certification_results", tags=["Results"])
 
 @api_router.get("/")
 def get_results(db: Session = Depends(get_db), user=Depends(get_current_user)):
     results = db.query(CertificationResult).filter(CertificationResult.user_id == user.id).all()
 
     return {
-        "results": [
+        "certification_results": [
             {
                 "title": r.certification_exam.title,
                 "score": r.score,

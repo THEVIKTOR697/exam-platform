@@ -4,16 +4,19 @@ from app.db.sync_db import get_engine, get_db
 from app.db.async_db import get_async_db
 from app.repositories.async_repo import async_user_repository
 from app.repositories.sync_repo import user_repository
-from app.api.routes import api_router
-from app.exams.router import api_router as exam_router
 from sqladmin import Admin, ModelView
 from app.models.user import User
 from app.models.certification_exam import CertificationExam
 from starlette.middleware.sessions import SessionMiddleware
 from app.auth.admin_auth import AdminAuth
+
+from app.reports.routes import api_router as reports_router
+from app.certification_exams.router import api_router as certification_exams_router
+from app.offerings.router import api_router as course_offering_router
 from app.auth.router import api_router as auth_router
 from app.payments.router import api_router as payments_router
-from app.results.router import api_router as results_router
+from app.certification_results.router import api_router as certification_results_router
+
 from fastapi.middleware.cors import CORSMiddleware
 import os
 import logging
@@ -24,11 +27,12 @@ logging.basicConfig(
 )
 app = FastAPI(title="Exam Platform API")
 SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret")
-app.include_router(api_router)
+app.include_router(reports_router)
 app.include_router(auth_router)
 app.include_router(payments_router)
-app.include_router(exam_router)
-app.include_router(results_router)
+app.include_router(certification_exams_router)
+app.include_router(certification_results_router)
+app.include_router(course_offering_router)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"],  # en prod restringir
