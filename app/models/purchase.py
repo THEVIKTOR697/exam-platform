@@ -21,13 +21,17 @@ class Purchase(Base):
         nullable=False,
         index=True
     )
-
-    # 💳 Stripe
+    # Identifies one logical checkout request per user.
+    checkout_request_id = Column(
+        String(36),
+        nullable=True,
+    )
+    # NULL until the Stripe Checkout session is created.
     stripe_session_id = Column(
         String,
         unique=True,
         index=True,
-        nullable=False
+        nullable=True,
     )
 
     payment_intent_id = Column(
@@ -57,5 +61,9 @@ class Purchase(Base):
     )
 
     __table_args__ = (
-        UniqueConstraint("user_id", "exam_id", name="uq_user_exam_purchase"),
+        UniqueConstraint(
+            "user_id",
+            "checkout_request_id",
+            name="uq_purchase_user_checkout_request",
+        ),
     )

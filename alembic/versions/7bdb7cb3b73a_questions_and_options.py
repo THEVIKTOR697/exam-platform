@@ -1,4 +1,4 @@
-"""questions_and_ options
+"""create_certification_questions_and_options_tables
 
 Revision ID: 7bdb7cb3b73a
 Revises: 2a58f18b07e7

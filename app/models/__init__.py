@@ -14,3 +14,4 @@ from .schedule import Schedule
 from .student import Student
 from .subject import Subject
 from .user import User
+from .outbox import OutboxEvent
