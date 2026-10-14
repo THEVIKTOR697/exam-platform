@@ -13,14 +13,14 @@ logging.basicConfig(
 
 log = logging.getLogger(__name__)
 
+TOPIC = "purchase.completed"
+GROUP_ID = "exam-access-service"
 
 async def consume():
-    log.info("KAFKACONSUMER: starting")
-
     consumer = AIOKafkaConsumer(
         "purchase.completed",
         bootstrap_servers="kafka:9092",
-        group_id="exam-access-service",
+        group_id=GROUP_ID,
         auto_offset_reset="earliest",
     )
 

@@ -34,6 +34,7 @@ pytest==9.0.2
 python-dotenv==1.2.2
 pytokens==0.4.1
 redis
+resend[async]
 ruff==0.15.9
 sqladmin==0.16.1
 SQLAlchemy==2.0.49

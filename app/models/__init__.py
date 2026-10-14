@@ -15,3 +15,4 @@ from .student import Student
 from .subject import Subject
 from .user import User
 from .outbox import OutboxEvent
+from .purchase_notification import PurchaseNotification
